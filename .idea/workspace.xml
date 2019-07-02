@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f27ca2f7-7228-42ba-ba36-967259683dd4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/main/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/main/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/main/VendingMachineImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/main/VendingMachineImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/Banck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/Banck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/ItemHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/ItemHolder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sda/vendingMachine/models/Storage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/main/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/main/App.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/main/VendingMachineImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/main/VendingMachineImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/models/ItemHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/models/ItemHolder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/models/Storage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/sda/vendingMachine/models/Storage.class" afterDir="false" />
-    </list>
+    <list default="true" id="f27ca2f7-7228-42ba-ba36-967259683dd4" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -339,7 +327,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18017058" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
