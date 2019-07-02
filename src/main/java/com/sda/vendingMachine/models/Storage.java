@@ -19,19 +19,16 @@ public class Storage {
     public static Storage getInstance() {
         if (instance == null)
             instance = new Storage();
+        for (int i = 0; i < Item.values().length; i++) {
+            instance.products.put(i+1, new ItemHolder(Item.values()[i]));
+        }
 
         return instance;
     }
 
-    public void adminRefill() {
-        for (int i = 0; i < Item.values().length; i++) {
-            Item item = Item.values()[i];
-            products.put(i + 1, new ItemHolder(item));
-        }
-    }
 
     @Override
     public String toString() {
-        return products.toString();
+        return products.toString()+"\n";
     }
 }

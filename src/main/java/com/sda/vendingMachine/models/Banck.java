@@ -37,25 +37,7 @@ public class Banck {
 
 
 
-    public void cashOutToDefault() {
-        for (Coin coin : coins.keySet()) {
-            CoinHolder coinHolder = coins.get(coin);
-            if (coinHolder.getStackOfCoins().size() < coinHolder.getMaxCapacity()) {
-                int coinsToRefill = coinHolder.getMaxCapacity() - coinHolder.getStackOfCoins().size();
-                for (int i = 0; i < coinsToRefill; i++) {
-                    coinHolder.getStackOfCoins().push(coin);
-                    cashOverStackedCoins -= coin.getVal();
-                }
-            }
-        }
-        if(cashOverStackedCoins>=0) {
-            System.out.println("You cashed OUT " + cashOverStackedCoins + " $");
-        }else{
-            System.out.println("You cashed IN "+ cashOverStackedCoins + " $");
-        }
-        cashOverStackedCoins=0;
 
-    }
 
     @Override
     public String toString() {
