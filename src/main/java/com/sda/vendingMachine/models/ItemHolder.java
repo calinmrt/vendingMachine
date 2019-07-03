@@ -10,9 +10,6 @@ public class ItemHolder {
     ItemHolder(Item item){
         this.itemType=item;
         this.quantity=item.getQuantity();
-        for (int i = 0; i <quantity ; i++) {
-            this.stackOfItems.add(item);
-        }
     }
 
     public ArrayDeque<Item> getStackOfItems() {
