@@ -12,6 +12,15 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>LATEST</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sda</groupId>
     <artifactId>wendingMachine</artifactId>

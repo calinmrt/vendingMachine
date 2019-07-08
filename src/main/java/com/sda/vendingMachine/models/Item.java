@@ -17,7 +17,7 @@ public enum Item {
     }
 
 
-    double getPrice() {
+    public double getPrice() {
 
         return price;
     }

@@ -1,9 +1,9 @@
 package com.sda.vendingMachine.models;
 
-public class InvalidPasswordException extends Exception {
-    private String message;
+public class NotFullPaidException extends Exception {
+    private final String message;
 
-    public InvalidPasswordException(String message) {
+    public NotFullPaidException(String message) {
         this.message = message;
     }
 
