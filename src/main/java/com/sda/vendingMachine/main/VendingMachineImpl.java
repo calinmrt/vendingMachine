@@ -22,6 +22,8 @@ public class VendingMachineImpl implements IVendingMachine {
 		}
 		return instance;
 	}
+	
+	
 
 	@Override
 	public void acceptCoin(Coin coin) {
