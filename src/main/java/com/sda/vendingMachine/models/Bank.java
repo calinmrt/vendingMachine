@@ -4,43 +4,52 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Bank {
-    private static Bank instance;
-    private double cashOverStackedCoins;
-    private Map<Coin, CoinHolder> coins = new TreeMap<>();
+	private static Bank instance;
+	private int cashOverStackedCoins;
+	private Map<Coin, CoinHolder> coins = new TreeMap<>();
 
-    public double getCashOverStackedCoins() {
-        return cashOverStackedCoins;
-    }
+	private Bank() {
+	}
 
-    public void setCashOverStackedCoins(double cashOverStackedCoins) {
-        this.cashOverStackedCoins = cashOverStackedCoins;
-    }
+	// singleton
+	public static Bank getInstance() {
+		if (instance == null) {
+			instance = new Bank();
+			for (int i = 0; i < Coin.values().length; i++) {
+				instance.coins.put(Coin.values()[i], new CoinHolder());
+			}
+		}
+		return instance;
+	}
 
-    public Map<Coin, CoinHolder> getCoins() {
-        return coins;
-    }
+	public int getCashOverStackedCoins() {
+		return cashOverStackedCoins;
+	}
 
+	public void setCashOverStackedCoins(int cashOverStackedCoins) {
+		this.cashOverStackedCoins = cashOverStackedCoins;
+	}
 
-    private Bank() {
-    }
+	public Map<Coin, CoinHolder> getCoins() {
+		return coins;
+	}
 
-    //singleton
-    public static Bank getInstance() {
-        if (instance == null) {
-            instance = new Bank();
-            for (int i = 0; i < Coin.values().length; i++) {
-                instance.coins.put(Coin.values()[i], new CoinHolder());
-            }
-        }
-        return instance;
-    }
+	public boolean isStackForCoinEmpty(Coin coin) {
+		return getCoinHolderForCoin(coin).isStackEmpty();
+	}
 
+	private CoinHolder getCoinHolderForCoin(Coin coin) {
+		return coins.get(coin);
+	}
+	
+	public Coin retrieveThisCoinFromSpecificCoinHolder(Coin c) {
+		return getCoinHolderForCoin(c).getThisCoin();
+	}
+	
+	
 
-
-
-
-    @Override
-    public String toString() {
-        return coins.toString();
-    }
+	@Override
+	public String toString() {
+		return coins.toString();
+	}
 }

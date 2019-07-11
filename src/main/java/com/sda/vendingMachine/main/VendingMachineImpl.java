@@ -10,12 +10,16 @@ public class VendingMachineImpl implements IVendingMachine {
 
 	private Storage storage = Storage.getInstance();
 	private Bank banck = Bank.getInstance();
-	private double balance;
+	private int userBalance;
 
 	private VendingMachineImpl() {
 	}
 
-	// singleton
+	/**
+	 * Singleton for unique instance
+	 * 
+	 * @return
+	 */
 	public static VendingMachineImpl getInstance() {
 		if (instance == null) {
 			instance = new VendingMachineImpl();
@@ -23,7 +27,9 @@ public class VendingMachineImpl implements IVendingMachine {
 		return instance;
 	}
 	
-	
+	public int getUserBalance() {
+		return userBalance;
+	}
 
 	@Override
 	public void acceptCoin(Coin coin) {
@@ -31,12 +37,11 @@ public class VendingMachineImpl implements IVendingMachine {
 				.get(coin);
 		if (coinHolder.getStackOfCoins()
 				.size() < coinHolder.getMaxCapacity()) {
-			coinHolder.getStackOfCoins()
-					.push(coin);
+			coinHolder.insertCoinInStack(coin);
 		} else {
 			banck.setCashOverStackedCoins(banck.getCashOverStackedCoins() + coin.getVal());
 		}
-		balance += coin.getVal();
+		userBalance += coin.getVal();
 	}
 
 	@Override
@@ -44,136 +49,127 @@ public class VendingMachineImpl implements IVendingMachine {
 		ItemHolder selectedItemHolder = storage.getProducts()
 				.get(key);
 		Item selectedItem = selectedItemHolder.getItemType();
-		boolean hasEnoughBalance = false;
-		boolean hasTheItem = false;
 		try {
-			hasEnoughBalance = this.checkPaidBalance(selectedItem.getPrice());
-		} catch (NotFullPaidException x) {
-			System.out.println(x.getMessage());
+			checkPaidBalance(selectedItem.getPrice());
+			checkAvailability(selectedItemHolder);
+		} catch (NotFullPaidException | SoldOutExeption e) {
+			System.out.println(e.getMessage() + " " + selectedItem);
 			return;
 		}
-		try {
-			hasTheItem = this.checkAvailability(selectedItemHolder);
-		} catch (SoldOutExeption x) {
-			System.out.println(x.getMessage());
-			return;
-		}
-		if (hasEnoughBalance && hasTheItem) {
-			this.dispenseTheProduct(selectedItemHolder);
-			this.balance -= selectedItem.getPrice();
-
-		}
+		dispenseTheProductFromItemHolder(selectedItem, selectedItemHolder);
+		System.out.println("Dispensed 1 " + selectedItem);
 
 	}
-
-	private void dispenseTheProduct(ItemHolder selectedItemHolder) {
-		Item dispensedItem = selectedItemHolder.getStackOfItems()
+	
+	/**
+	 * Dispenses selected Item assuming all conditions were checked
+	 * 
+	 * @param item               to be dispensed
+	 * @param selectedItemHolder the holder that contains this Item
+	 * @return selected Item
+	 */
+	private Item dispenseTheProductFromItemHolder(Item item, ItemHolder selectedItemHolder) {
+		userBalance -= item.getPrice();
+		return selectedItemHolder.getStackOfItems()
 				.poll();
-		System.err.println("Dispensed 1 pc of: " + dispensedItem);
 	}
 
-	private boolean checkAvailability(ItemHolder selectedItemHolder) throws SoldOutExeption {
+	/**
+	 * Checks availability of selected Item in specific Holder
+	 * 
+	 * @param selectedItemHolder that contains selected Item
+	 * @throws SoldOutExeption If selected Item not available
+	 */
+	private void checkAvailability(ItemHolder selectedItemHolder) throws SoldOutExeption {
+		Item selectedProduct = selectedItemHolder.getItemType();
 		if (selectedItemHolder.getStackOfItems()
 				.isEmpty())
-			throw new SoldOutExeption("This product is sold out! ");
-		else
-			return true;
-
+			throw new SoldOutExeption(selectedProduct + " This product is sold out! ");
 	}
 
-	private boolean checkPaidBalance(Double itemPrice) throws NotFullPaidException {
-		if (balance < itemPrice)
-			throw new NotFullPaidException("Not full paid for this product!");
-		else
-			return true;
+	/**
+	 * Checks if fully paid for selected Item
+	 * 
+	 * @param itemPrice price of selected Item
+	 * @throws NotFullPaidException and missing difference
+	 */
+	public void checkPaidBalance(int itemPrice) throws NotFullPaidException {
+		if (userBalance < itemPrice)
+			throw new NotFullPaidException(
+					"Not full paid for this product! you are " + (itemPrice - userBalance) + " short");
 	}
 
 	@Override
-	public void cashBalance() {
+	public void refundRemainingBalance() {
 		List<Coin> change = new ArrayList<>();
-		if (balance > 0) {	
-			try {
-			change=getCoins(change);
-			if(balance!=0) {
-				throw new NotSufficientChangeException("Not Sufficient Change to dispense the Remaining Balance: ");
-			}}
-			catch (NotSufficientChangeException x){				
-				System.out.println(x.getMessage()+balance);				
-			}
+		try {
+			collectCoinsForChange(change);
+		} catch (NotSufficientChangeException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			System.out.println(change.toString());
 		}
-		
-		System.out.println("dispensed coins are: \n"+change.toString());
-		
 	}
 
-	private List<Coin> getCoins(List<Coin> coins) {
-		while (balance > Coin.QUARTER.getVal() && !banck.getCoins()
-				.get(Coin.QUARTER)
-				.getStackOfCoins()
-				.isEmpty()) {
-			Coin c = banck.getCoins()
-					.get(Coin.QUARTER)
-					.getStackOfCoins()
-					.pop();
-			coins.add(c);
-			balance -= c.getVal();
+	/**
+	 * Collects from the bank available coins to refund if possible the entire User
+	 * Balance starting to collect from the maximum appropriate value
+	 * 
+	 * @param change List collector for collected change
+	 * @return List of Coins collected for change
+	 * @throws NotSufficientChangeException if there are no more coins available for
+	 *                                      change
+	 */
+	private List<Coin> collectCoinsForChange(List<Coin> change) throws NotSufficientChangeException {
+		for (Coin coin : Coin.getSortedCoins()) {
+			if (userBalance > coin.getVal())
+				collectSpecificCoin(change, coin);
 		}
-		while (balance > Coin.DIME.getVal() && !banck.getCoins()
-				.get(Coin.DIME)
-				.getStackOfCoins()
-				.isEmpty()) {
-			Coin c = banck.getCoins()
-					.get(Coin.DIME)
-					.getStackOfCoins()
-					.pop();
-			coins.add(c);
-			balance -= c.getVal();
-		}
-		while (balance > Coin.NICKEL.getVal() && !banck.getCoins()
-				.get(Coin.NICKEL)
-				.getStackOfCoins()
-				.isEmpty()) {
-			Coin c = banck.getCoins()
-					.get(Coin.NICKEL)
-					.getStackOfCoins()
-					.pop();
-			coins.add(c);
-			balance -= c.getVal();
-		}
-		while (balance > Coin.PENNY.getVal() && !banck.getCoins()
-				.get(Coin.PENNY)
-				.getStackOfCoins()
-				.isEmpty()) {
-			Coin c = banck.getCoins()
-					.get(Coin.PENNY)
-					.getStackOfCoins()
-					.pop();
-			coins.add(c);
-			balance -= c.getVal();
+		if (userBalance > 0)
+			throw new NotSufficientChangeException(change);
+		return change;
+	}
+
+	/**
+	 * CoinHolder specific collector, collects maximum available same type coins
+	 * 
+	 * @param coins list of collected coins
+	 * @param coin  specific Coin to collect
+	 * @return updated list of coins for change
+	 */
+	private List<Coin> collectSpecificCoin(List<Coin> coins, Coin coin) {
+		while (userBalance >= coin.getVal() && !banck.isStackForCoinEmpty(coin)) {
+			coins.add(banck.retrieveThisCoinFromSpecificCoinHolder(coin));
+			userBalance -= coin.getVal();
 		}
 		return coins;
 	}
 
 	@Override
 	public void adminRefillMachine(String pass) {
-		System.out.println("***********************************");
 		try {
-			if (pass == "admin") {
-				this.adminRefill();
-				this.cashOutToDefault();
-
-			} else {
-				throw new InvalidPasswordException("invalid password");
-			}
-
-		} catch (InvalidPasswordException x) {
-			System.out.println(x.getMessage());
-		} finally {
-			System.out.println("***********************************");
-
+			checkPassword(pass);
+			adminRefill();
+			cashOutToDefault();
+		} catch (InvalidPasswordException e) {
+			e.getMessage();
 		}
 	}
 
+	/**
+	 * checks if user has administrator rights
+	 * 
+	 * @param pass user inserted password
+	 * @throws InvalidPasswordException if pass is not valid
+	 */
+	private void checkPassword(String pass) throws InvalidPasswordException {
+		if (pass != "admin")
+			throw new InvalidPasswordException("invalid password");
+	}
+
+	/**
+	 * Refills the storage of machine with missing Items in ItemHolders
+	 */
 	private void adminRefill() {
 		for (Integer i : storage.getProducts()
 				.keySet()) {
@@ -186,13 +182,16 @@ public class VendingMachineImpl implements IVendingMachine {
 						.push(itemHolder.getItemType());
 				cnt++;
 			}
-			System.out.println("refilled with " + cnt + " " + itemHolder.getItemType());
+			System.out.println("********refilled with " + cnt + " " + itemHolder.getItemType());
 
 		}
 	}
 
+	/**
+	 * cashes IN coins missing in coinHolders for change or respectively cashes OUT
+	 * the Bank balance after assuring that coinHolders are full
+	 */
 	private void cashOutToDefault() {
-
 		for (Coin coin : banck.getCoins()
 				.keySet()) {
 			CoinHolder coinHolder = banck.getCoins()
@@ -204,16 +203,15 @@ public class VendingMachineImpl implements IVendingMachine {
 				for (int i = 0; i < coinsToRefill; i++) {
 					coinHolder.getStackOfCoins()
 							.push(coin);
-					banck.setCashOverStackedCoins(
-							Math.round((banck.getCashOverStackedCoins() - coin.getVal()) * 100.0) / 100.0);
+					banck.setCashOverStackedCoins(banck.getCashOverStackedCoins() - coin.getVal());
 				}
 			}
 		}
 
 		if (banck.getCashOverStackedCoins() >= 0) {
-			System.out.println("You cashed OUT " + banck.getCashOverStackedCoins() + " $");
+			System.out.println("******** cashed OUT " + banck.getCashOverStackedCoins() / 100d + "$");
 		} else {
-			System.out.println("You cashed IN " + (banck.getCashOverStackedCoins() * -1) + " $");
+			System.out.println("******** cashed IN " + (banck.getCashOverStackedCoins() / 100d * -1) + " $");
 		}
 		banck.setCashOverStackedCoins(0);
 
@@ -221,7 +219,7 @@ public class VendingMachineImpl implements IVendingMachine {
 
 	@Override
 	public String toString() {
-		return storage.toString() + "\n" + banck.toString() + "\n" + "balance is: " + balance + "\n"
+		return storage.toString() + "\n" + banck.toString() + "\n" + "balance is: " + userBalance + "\n"
 				+ "balance of banck is: " + banck.getCashOverStackedCoins();
 	}
 }

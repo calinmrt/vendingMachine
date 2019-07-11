@@ -7,13 +7,16 @@ public class App {
 		IVendingMachine atm = VendingMachineImpl.getInstance();
 		atm.adminRefillMachine("admin");
 		
-//		atm.acceptCoin(Coin.NICKEL);
-//		atm.acceptCoin(Coin.NICKEL);
-//
+		atm.selectItem(1);
+		System.out.println(atm+"\n");
+		atm.acceptCoin(Coin.NICKEL);
+		atm.acceptCoin(Coin.NICKEL);
+		atm.acceptCoin(Coin.NICKEL);
+		atm.selectItem(2);
 //		atm.selectItem(1);
 //		System.out.println(atm);
 //		atm.cashBalance();
-//		System.out.println(atm);
+		System.out.println(atm+"\n");
 
 	}
 }

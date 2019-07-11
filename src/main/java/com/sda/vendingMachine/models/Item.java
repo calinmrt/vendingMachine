@@ -1,12 +1,12 @@
 package com.sda.vendingMachine.models;
 
 public enum Item {
-    COKE(0.75, 5), WATER(0.10, 5), CRACKERS(0.25, 10);
+    COKE(50, 5), WATER(10, 5), CRACKERS(25, 10);
 
-    private double price;
+    private int price;
     private int quantity;
 
-    Item(double price, int quantity) {
+    Item(int price, int quantity) {
         this.price = price;
         this.quantity = quantity;
     }
@@ -17,10 +17,11 @@ public enum Item {
     }
 
 
-    public double getPrice() {
+    public int getPrice() {
 
         return price;
     }
 
 
 }
+ 

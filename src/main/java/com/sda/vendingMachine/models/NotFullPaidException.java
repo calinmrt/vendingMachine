@@ -1,7 +1,7 @@
 package com.sda.vendingMachine.models;
 
 public class NotFullPaidException extends Exception {
-    private final String message;
+    private String message;
 
     public NotFullPaidException(String message) {
         this.message = message;
@@ -12,3 +12,4 @@ public class NotFullPaidException extends Exception {
         return message;
     }
 }
+ 

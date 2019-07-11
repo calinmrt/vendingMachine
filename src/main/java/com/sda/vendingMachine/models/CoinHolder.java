@@ -7,12 +7,24 @@ public class CoinHolder {
     private ArrayDeque<Coin> stackOfCoins=new ArrayDeque<>();
 
 
-    public  int getMaxCapacity() {
+    public  int getMaxCapacity() { 
         return MAX_CAPACITY;
     }
 
     public ArrayDeque<Coin> getStackOfCoins() {
         return stackOfCoins;
+    }
+    
+    public void insertCoinInStack(Coin coin) {
+    	stackOfCoins.push(coin);
+    }
+    
+    public boolean isStackEmpty() {
+    	return stackOfCoins.isEmpty();
+    }
+    
+    public Coin getThisCoin() {
+    	return stackOfCoins.pop();
     }
 
     @Override

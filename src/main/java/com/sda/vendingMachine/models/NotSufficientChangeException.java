@@ -1,16 +1,25 @@
 package com.sda.vendingMachine.models;
 
-public class NotSufficientChangeException extends Exception {
-	private String message;
+import java.util.ArrayList;
+import java.util.List;
 
-	public NotSufficientChangeException(String message) {
+public class NotSufficientChangeException extends Exception {
+	private final String message="Not sufficient change to refund all balance";
+	List<Coin> change = new ArrayList<>();
+
+	
+
+	public NotSufficientChangeException(List<Coin> change) {
 		super();
-		this.message = message;
+		this.change = change;
 	}
 
-	@Override
-	public String getMessage() {
+
+
+	public String getMessage() {		
 		return message;
 	}
+
+	
 
 }
